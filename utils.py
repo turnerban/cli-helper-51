@@ -1,29 +1,18 @@
-def safe_divide(numerator, denominator):
-    """Safely divides numerator by denominator, handling edge cases."""
-    try:
-        if denominator == 0:
-            raise ValueError('Denominator cannot be zero.')
-        return numerator / denominator
-    except TypeError:
-        raise TypeError('Both numerator and denominator must be numbers.')
+import time
+import random
 
+def performance_optimized_function(data):
+    start_time = time.time()
+    results = []
+    for item in data:
+        process_time = random.uniform(0.1, 0.5)
+        time.sleep(process_time)  # Simulate processing time
+        results.append(item ** 2)  # Example processing: squaring the item
+    end_time = time.time()
+    print(f"Processing time: {end_time - start_time} seconds")
+    return results
 
-def read_file(file_path):
-    """Reads content from a file, with error handling for edge cases."""
-    try:
-        with open(file_path, 'r') as file:
-            return file.read()
-    except FileNotFoundError:
-        raise FileNotFoundError(f'File not found: {file_path}')
-    except IOError:
-        raise IOError('An error occurred trying to read the file.')
-
-
-def parse_int(value):
-    """Tries to parse a string to an integer with error handling."""
-    try:
-        return int(value)
-    except ValueError:
-        raise ValueError(f'Value must be an integer: {value}')
-    except TypeError:
-        raise TypeError('Input must be a string or a number.')
+if __name__ == '__main__':
+    sample_data = list(range(10))
+    output = performance_optimized_function(sample_data)
+    print(output)
