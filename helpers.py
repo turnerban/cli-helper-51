@@ -1,33 +1,29 @@
-import os
+import random
 import json
 
-class FileHelper:
-    @staticmethod
-    def read_json(file_path):
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"{file_path} does not exist.")
-        with open(file_path, 'r') as file:
-            return json.load(file)
+def generate_random_username(length=8):
+    letters = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    username = ''.join(random.choice(letters) for _ in range(length))
+    return username
 
-    @staticmethod
-    def write_json(file_path, data):
-        with open(file_path, 'w') as file:
-            json.dump(data, file, indent=4)
+def save_high_score(player_name, score, file_path='high_scores.json'):
+    try:
+        high_scores = load_high_scores(file_path)
+    except FileNotFoundError:
+        high_scores = {}
+    high_scores[player_name] = max(high_scores.get(player_name, 0), score)
+    with open(file_path, 'w') as f:
+        json.dump(high_scores, f)
 
-class StringHelper:
-    @staticmethod
-    def capitalize_words(string):
-        return ' '.join(word.capitalize() for word in string.split())
+def load_high_scores(file_path='high_scores.json'):
+    with open(file_path, 'r') as f:
+        return json.load(f)
 
-    @staticmethod
-    def reverse_string(string):
-        return string[::-1]
-
+def get_top_scores(file_path='high_scores.json', top_n=5):
+    high_scores = load_high_scores(file_path)
+    return dict(sorted(high_scores.items(), key=lambda item: item[1], reverse=True)[:top_n])
 
 if __name__ == '__main__':
-    # Sample usage
-    sample_data = {'key': 'value'}
-    FileHelper.write_json('sample.json', sample_data)
-    print(FileHelper.read_json('sample.json'))
-    print(StringHelper.capitalize_words('hello world'))
-    print(StringHelper.reverse_string('hello'))
+    print(generate_random_username())
+    save_high_score('player1', 150)
+    print(get_top_scores())
