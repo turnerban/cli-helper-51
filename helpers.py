@@ -1,29 +1,33 @@
 import random
-import json
+import string
+
 
 def generate_random_username(length=8):
-    letters = 'abcdefghijklmnopqrstuvwxyz0123456789'
-    username = ''.join(random.choice(letters) for _ in range(length))
-    return username
+    return 'User_' + ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
-def save_high_score(player_name, score, file_path='high_scores.json'):
-    try:
-        high_scores = load_high_scores(file_path)
-    except FileNotFoundError:
-        high_scores = {}
-    high_scores[player_name] = max(high_scores.get(player_name, 0), score)
-    with open(file_path, 'w') as f:
-        json.dump(high_scores, f)
 
-def load_high_scores(file_path='high_scores.json'):
-    with open(file_path, 'r') as f:
+def save_game_data(game_state):
+    with open('save_data.json', 'w') as f:
+        json.dump(game_state, f)
+
+
+def load_game_data():
+    with open('save_data.json', 'r') as f:
         return json.load(f)
 
-def get_top_scores(file_path='high_scores.json', top_n=5):
-    high_scores = load_high_scores(file_path)
-    return dict(sorted(high_scores.items(), key=lambda item: item[1], reverse=True)[:top_n])
+
+def calculate_high_score(scores):
+    return max(scores) if scores else 0
+
+
+def format_special_characters(text):
+    return ''.join(c if c.isalnum() else '_' for c in text)
+
 
 if __name__ == '__main__':
     print(generate_random_username())
-    save_high_score('player1', 150)
-    print(get_top_scores())
+    game_state = {'level': 5, 'score': 1500}
+    save_game_data(game_state)
+    print(load_game_data())
+    print(calculate_high_score([100, 200, 300]))
+    print(format_special_characters('Player @#1!'))
