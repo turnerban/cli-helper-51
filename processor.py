@@ -1,25 +1,30 @@
-import re
+import random
+import logging
 
-def process_input(user_input):
-    if not isinstance(user_input, str):
-        raise ValueError('Input must be a string')
-    if len(user_input) < 3:
-        raise ValueError('Input must be at least 3 characters long')
-    if len(user_input) > 20:
-        raise ValueError('Input must not exceed 20 characters')
-    if not re.match('^[a-zA-Z0-9_]+$', user_input):
-        raise ValueError('Input must be alphanumeric and can include underscores')
-    return user_input
+class Processor:
+    def __init__(self):
+        self.data = []
+        self.log = logging.getLogger("Processor")
 
-def main_loop():
-    while True:
-        user_input = input('Enter your command: ')
-        try:
-            validated_input = process_input(user_input)
-            print(f'Processing: {validated_input}')
-            # Further processing code here
-        except ValueError as ve:
-            print(f'Error: {ve}')
+    def add_data(self, item):
+        if not isinstance(item, int):
+            self.log.error("Item must be an integer, got %s", type(item).__name__)
+            raise ValueError("Item must be an integer")
+        self.data.append(item)
+        self.log.info("Added item: %d", item)
 
-if __name__ == '__main__':
-    main_loop()
+    def compute_average(self):
+        if not self.data:
+            self.log.warning("No data available to compute average")
+            raise ValueError("No data available")
+        average = sum(self.data) / len(self.data)
+        self.log.info("Computed average: %.2f", average)
+        return average
+
+    def get_random_item(self):
+        if not self.data:
+            self.log.error("Attempted to retrieve from empty data list")
+            raise IndexError("The data list is empty")
+        item = random.choice(self.data)
+        self.log.info("Retrieved random item: %d", item)
+        return item
