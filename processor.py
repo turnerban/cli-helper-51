@@ -1,30 +1,29 @@
-import random
-import logging
+import json
 
-class Processor:
-    def __init__(self):
-        self.data = []
-        self.log = logging.getLogger("Processor")
+class GameDataProcessor:
+    def __init__(self, data):
+        self.data = data
 
-    def add_data(self, item):
-        if not isinstance(item, int):
-            self.log.error("Item must be an integer, got %s", type(item).__name__)
-            raise ValueError("Item must be an integer")
-        self.data.append(item)
-        self.log.info("Added item: %d", item)
+    def filter_data(self, filter_func):
+        return [d for d in self.data if filter_func(d)]
 
-    def compute_average(self):
-        if not self.data:
-            self.log.warning("No data available to compute average")
-            raise ValueError("No data available")
-        average = sum(self.data) / len(self.data)
-        self.log.info("Computed average: %.2f", average)
-        return average
+    def convert_to_json(self):
+        return json.dumps(self.data, indent=4)
 
-    def get_random_item(self):
-        if not self.data:
-            self.log.error("Attempted to retrieve from empty data list")
-            raise IndexError("The data list is empty")
-        item = random.choice(self.data)
-        self.log.info("Retrieved random item: %d", item)
-        return item
+    def aggregate_scores(self):
+        return sum(d['score'] for d in self.data if 'score' in d)
+
+    def get_average_score(self):
+        score_list = [d['score'] for d in self.data if 'score' in d]
+        return sum(score_list) / len(score_list) if score_list else 0.0
+
+if __name__ == '__main__':
+    sample_data = [
+        {'player': 'Alice', 'score': 200},
+        {'player': 'Bob', 'score': 150},
+        {'player': 'Charlie', 'score': 300}
+    ]
+    processor = GameDataProcessor(sample_data)
+    print(processor.convert_to_json())
+    print('Total score:', processor.aggregate_scores())
+    print('Average score:', processor.get_average_score())
