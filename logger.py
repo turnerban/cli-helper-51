@@ -1,27 +1,26 @@
 import logging
 
-# Configure logging settings
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+class GameLogger:
+    def __init__(self, name='GameLogger', level=logging.INFO):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(level)
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
 
-# Create a logger object
-logger = logging.getLogger('cli-helper-51')
+    def log_event(self, event, level=logging.INFO):
+        if level == logging.INFO:
+            self.logger.info(event)
+        elif level == logging.WARNING:
+            self.logger.warning(event)
+        elif level == logging.ERROR:
+            self.logger.error(event)
+        else:
+            self.logger.debug(event)
 
-# Function to log a message if it's deemed valid
+    def log_score(self, player, score):
+        self.logger.info(f'Player: {player}, Score: {score}') 
 
-def log_message(message):
-    if isinstance(message, str) and message:
-        logger.info(message)
-    else:
-        logger.warning('Invalid message: Must be a non-empty string')
-
-# Main processing loop simulation
-
-def main_loop():
-    while True:
-        user_input = input('Enter a message to log (or type "exit" to quit): ')
-        if user_input.lower() == 'exit':
-            break  
-        log_message(user_input)
-
-if __name__ == '__main__':
-    main_loop()
+    def log_action(self, player, action):
+        self.logger.info(f'Player: {player} performed action: {action}')
