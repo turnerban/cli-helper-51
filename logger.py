@@ -1,7 +1,15 @@
 import logging
+from typing import Optional
 
-class GameLogger:
-    def __init__(self, name='GameLogger', level=logging.INFO):
+class Logger:
+    """
+    Custom logger for game events and errors.
+    """
+
+    def __init__(self, name: str, level: Optional[int] = logging.INFO) -> None:
+        """
+        Initializes the Logger with the specified name and log level.
+        """
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
         handler = logging.StreamHandler()
@@ -9,18 +17,34 @@ class GameLogger:
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
-    def log_event(self, event, level=logging.INFO):
-        if level == logging.INFO:
-            self.logger.info(event)
-        elif level == logging.WARNING:
-            self.logger.warning(event)
-        elif level == logging.ERROR:
-            self.logger.error(event)
-        else:
-            self.logger.debug(event)
+    def log_info(self, message: str) -> None:
+        """
+        Logs an informational message.
+        """
+        self.logger.info(message)
 
-    def log_score(self, player, score):
-        self.logger.info(f'Player: {player}, Score: {score}') 
+    def log_warning(self, message: str) -> None:
+        """
+        Logs a warning message.
+        """
+        self.logger.warning(message)
 
-    def log_action(self, player, action):
-        self.logger.info(f'Player: {player} performed action: {action}')
+    def log_error(self, message: str) -> None:
+        """
+        Logs an error message.
+        """
+        self.logger.error(message)
+
+    def log_debug(self, message: str) -> None:
+        """
+        Logs a debug message.
+        """
+        self.logger.debug(message)
+
+# Example usage:
+if __name__ == '__main__':
+    game_logger = Logger('GameLogger')
+    game_logger.log_info('Game has started.')
+    game_logger.log_warning('Low health warning.')
+    game_logger.log_error('An error occurred.')
+    game_logger.log_debug('Debugging the game state.')
